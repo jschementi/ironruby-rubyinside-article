@@ -15,51 +15,46 @@
 <body>
   <script type="text/ruby" src="repl.rb"></script>
   <script type="text/ruby" src="wpf_ext.rb"></script>
+  <script type="text/ruby" src="bouncer.rb"></script>
+  <script type="text/ruby" src="sketch.rb"></script>
   <script type="text/ruby">
-    class DrawingSurface < UserControl
-      def self.draw(&b)
-        ds = self.new
-        Application.current.root_visual = ds
-        ds.content = Canvas.build do
-          self.background = :black
-          self.loaded{ |_,_| b.call(ds) if block_given? }
-        end
-        ds
-      end
-    
-      def canvas
-        self.content
-      end
-    
-      def draw_squares
-        colors = %W(red orange yellow lime blue purple violet)
-        brushes = colors.map{|c| SolidColorBrush.new(Colors.send(c)) }
-        canvas_dim = lambda{ [canvas.actual_width, canvas.actual_height] }
-        const = 15
-        500.times do |i|
+    class Squares < Sketch
+      def setup
+        length = 15
+        200.times do |i|
           canvas.dispatcher.begin_invoke do |s,e|
-            size = rand(canvas_dim[].max / const)
-            shape = Rectangle.new
-            shape.width, shape.height = size, size
-            shape.fill = brushes[rand(brushes.size)]
-            shape.stroke = brushes[rand(brushes.size)]
-            shape.stroke_thickness = rand(canvas_dim[].max / (const * 7)) + 4
-            canvas.children.add(shape)
-            Canvas.set_left(shape, rand(canvas_dim[].first - size))
-            Canvas.set_top(shape, rand(canvas_dim[].last  - size))
+            size = rand(dimensions.max / length)
+            canvas.children.add(square(
+              :size => size,
+              :fill => rand_brush, 
+              :stroke => rand_brush,
+              :stroke_thickness => rand(dimensions.max / (length * 7)) + 4,
+              :left => rand(dimensions.first - size),
+              :top  => rand(dimensions.last  - size),
+              :tag => Bouncer.new(rand(10)-5, rand(10)-5, canvas)
+            ))
           end
         end
       end
+
+      def draw
+        canvas.children.each do |obj|
+          obj.tag.update(obj) if obj.tag
+        end
+      end
+      
+      def brushes
+        @brushes ||= %W(red orange yellow lime blue purple violet).map do |c| 
+          SolidColorBrush.new(Colors.send(c))
+        end
+      end
+      
+      def rand_brush
+        brushes[rand(brushes.size)]
+      end
     end
 
-    $ds = DrawingSurface.draw do |ds|
-      ds.draw_squares
-    end
-    
-    #require 'bouncer'
-    #def each_object target
-    #  Bouncer.new rand(10)-5, rand(10)-5, canvas
-    #end
+    Squares.create_sketch
   </script>
 </body>
 </html>
