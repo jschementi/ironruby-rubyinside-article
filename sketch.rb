@@ -11,7 +11,7 @@ class DrawingSurface < UserControl
       @current.content = Canvas.build do
         self.background = :black
         self.loaded do |_,_|
-          DrawingSurface.current.set_sketch(sketch_class)
+          DrawingSurface.current.sketch = sketch_class
           DrawingSurface.current.start
         end
       end
@@ -27,10 +27,18 @@ class DrawingSurface < UserControl
     @timer.interval = TimeSpan.new(0,0,0,0,1000/30);
   end
   
-  def set_sketch(sketch)
-    @sketch = sketch.new(content)
+  def sketch
+    @sketch
+  end
+
+  def sketch=(sketch_class)
+    @sketch = sketch_class.new(content)
+    content.mouse_left_button_down.add @sketch.method(:mouse_pressed) if @sketch.respond_to? :mouse_pressed
+    content.mouse_left_button_up.add @sketch.method(:mouse_released) if @sketch.respond_to? :mouse_released
+    content.mouse_move.add @sketch.method(:mouse_dragged) if @sketch.respond_to? :mouse_dragged
     @each_frame_method = @sketch.respond_to?(:draw) ? @sketch.method(:draw) : nil
-    @sketch.setup if @sketch.respond_to?(:setup)
+    @sketch.setup(content) if @sketch.respond_to?(:setup)
+    $sketch = @sketch
   end
   
   def start

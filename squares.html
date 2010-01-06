@@ -1,6 +1,6 @@
 <html>
 <head>
-	<title>Squares</title>
+	<title>Ruby - 2D Animation</title>
 	<style type="text/css">
     html, body { height: 100%; overflow: hidden; }
     body { padding: 0; margin: 0; }
@@ -19,7 +19,7 @@
   <script type="text/ruby" src="sketch.rb"></script>
   <script type="text/ruby">
     class Squares < Sketch
-      def setup
+      def setup(container)
         length = 15
         200.times do |i|
           canvas.dispatcher.begin_invoke do |s,e|
@@ -40,7 +40,7 @@
       def draw
         canvas.children.each do |obj|
           obj.tag.update(obj) if obj.tag
-        end
+        end if @bounce_on
       end
       
       def brushes
@@ -51,6 +51,10 @@
       
       def rand_brush
         brushes[rand(brushes.size)]
+      end
+      
+      def toggle_bounce
+        @bounce_on = !@bounce_on
       end
     end
 
