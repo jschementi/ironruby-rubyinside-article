@@ -1,0 +1,65 @@
+<html>
+<head>
+	<title>Squares</title>
+	<style type="text/css">
+    html, body { height: 100%; overflow: hidden; }
+    body { padding: 0; margin: 0; }
+    #squares { height: 100%; }
+  </style>
+	<script type="text/javascript" charset="utf-8">
+	 window.DLR = {}
+	 DLR.settings = {id: 'squares', width:'100%', height:'100%'}
+	</script>
+	<script src="http://mschnlnine.vo.llnwd.net/d1/dlr-20091120.js" type="text/javascript"></script>
+</head>
+<body>
+  <script type="text/ruby" src="repl.rb"></script>
+  <script type="text/ruby" src="wpf_ext.rb"></script>
+  <script type="text/ruby">
+    class DrawingSurface < UserControl
+      def self.draw(&b)
+        ds = self.new
+        Application.current.root_visual = ds
+        ds.content = Canvas.build do
+          self.background = :black
+          self.loaded{ |_,_| b.call(ds) if block_given? }
+        end
+        ds
+      end
+    
+      def canvas
+        self.content
+      end
+    
+      def draw_squares
+        colors = %W(red orange yellow lime blue purple violet)
+        brushes = colors.map{|c| SolidColorBrush.new(Colors.send(c)) }
+        canvas_dim = lambda{ [canvas.actual_width, canvas.actual_height] }
+        const = 15
+        500.times do |i|
+          canvas.dispatcher.begin_invoke do |s,e|
+            size = rand(canvas_dim[].max / const)
+            shape = Rectangle.new
+            shape.width, shape.height = size, size
+            shape.fill = brushes[rand(brushes.size)]
+            shape.stroke = brushes[rand(brushes.size)]
+            shape.stroke_thickness = rand(canvas_dim[].max / (const * 7)) + 4
+            canvas.children.add(shape)
+            Canvas.set_left(shape, rand(canvas_dim[].first - size))
+            Canvas.set_top(shape, rand(canvas_dim[].last  - size))
+          end
+        end
+      end
+    end
+
+    $ds = DrawingSurface.draw do |ds|
+      ds.draw_squares
+    end
+    
+    #require 'bouncer'
+    #def each_object target
+    #  Bouncer.new rand(10)-5, rand(10)-5, canvas
+    #end
+  </script>
+</body>
+</html>
