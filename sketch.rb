@@ -37,7 +37,7 @@ class DrawingSurface < UserControl
     content.mouse_left_button_up.add @sketch.method(:mouse_released) if @sketch.respond_to? :mouse_released
     content.mouse_move.add @sketch.method(:mouse_dragged) if @sketch.respond_to? :mouse_dragged
     @each_frame_method = @sketch.respond_to?(:draw) ? @sketch.method(:draw) : nil
-    @sketch.setup(content) if @sketch.respond_to?(:setup)
+    @sketch.setup if @sketch.respond_to?(:setup)
     $sketch = @sketch
   end
   
@@ -47,10 +47,10 @@ class DrawingSurface < UserControl
 end
 
 class Sketch
-  attr_reader :canvas
+  attr_reader :container
 
   def initialize(canvas)
-    @canvas = canvas
+    @container = canvas
   end
   
   def self.create_sketch
@@ -58,22 +58,54 @@ class Sketch
   end
   
   def dimensions
-    [canvas.actual_width, canvas.actual_height]
+    [container.actual_width, container.actual_height]
   end
   
   def rectangle(fields = {})
-    left, top = fields.delete(:left), fields.delete(:top)
-    shape = Rectangle.new
-    fields.each do |key, value|
-      shape.send("#{key}=", value)
-    end
-    Canvas.set_left(shape, left) if left
-    Canvas.set_top(shape, top) if top
-    shape
+    shape Rectangle, fields
   end
   
   def square(fields = {})
-    size = fields.delete(:size)
-    rectangle({:width => size, :height => size}.merge(fields))
+    box_variant_of :rectangle, fields
   end
+
+  def ellipse(fields = {})
+    shape Ellipse, fields
+  end
+
+  def circle(fields = {})
+    box_variant_of :ellipse, fields
+  end
+
+private
+
+  def box_variant_of(name, fields)
+    size = fields.delete(:size)
+    send(name, {:width => size, :height => size}.merge(fields))
+  end
+
+  def shape(klass, fields)
+    shape = klass.new
+    process_fields shape, fields
+    shape
+  end
+
+  def process_fields(obj, fields)
+    left, top = fields.delete(:left), fields.delete(:top)
+    dotted = {}
+    fields.each do |key, value|
+      if key.to_s.split('.').size > 1
+        dotted[key] = value
+      else
+        obj.send("#{key}=", value)
+      end
+    end
+    dotted.each do |key, value|
+      obj.instance_eval{ @__tmp = value }
+      obj.instance_eval("self.#{key} = @__tmp; @__tmp = nil")
+    end
+    Canvas.set_left(obj, left) if left
+    Canvas.set_top(obj, top) if top
+  end
+
 end
