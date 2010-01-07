@@ -20,16 +20,13 @@ class Microsoft::Scripting::Silverlight::Repl
   end
 end
 
-$repl = Microsoft::Scripting::Silverlight::Repl.show('ruby')
-$stdout = $repl.output_buffer
-$stderr = $repl.output_buffer
-
 if document.query_string.contains_key 'console'
+  $repl = Microsoft::Scripting::Silverlight::Repl.show('ruby')
+  $stdout = $repl.output_buffer
+  $stderr = $repl.output_buffer
   if document.query_string['console'] == 'off'
     $repl.hide_all_panels
   else
     $repl.show_ironruby
   end
-else
-  $repl.remove
 end

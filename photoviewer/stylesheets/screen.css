@@ -28,6 +28,9 @@ div.clear {
   background-color: #ccc;
 }
 
+form#search {
+  margin: 0px;
+}
 form#search #images_loading {
   width: 18px; 
   height: 15px;
@@ -70,7 +73,7 @@ form#search #images_loading {
 #search_links a {
   border: 1px solid #003344;
   margin: 2px;
-  padding: 0px 5px;
+  padding: 4px 5px 1px;
   color: #003344;
   background-color: white;
   text-decoration: none;

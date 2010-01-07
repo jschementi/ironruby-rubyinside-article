@@ -10,42 +10,16 @@ class Render
 
   def generate_photos
     if @flickr.stat == "ok" && @flickr.photos.total.to_i > 0
-      erb %Q{
-        <div class='images'>
-          <% @flickr.photos.photo.each do |p| %>
-            <%= photo p %>
-          <% end %>
-        </div>
-      }
+      erb :images
     else
       "No images found!"
     end
   end
 
-  def photo(p)
-    erb %q{
-      <% source = "http://farm#{p.farm.to_i}.static.flickr.com/#{p.server}/#{p.photo_id}_#{p.secret}" %>
-      <div class='image'>
-        <a href="<%= source %>.jpg"
-           title="&lt;a href=&quot;http://www.flickr.com/photos/<%= p.owner %>/<%= p.photo_id %>&quot; target=&quot;_blank&quot;&gt;<%= p.title %>&lt;/a&gt;"
-           rel="lightbox[<%= @tags %>]"
-        >
-          <img src="<%= source %>_s.jpg" />
-        </a>
-      </div>
-    }, binding
-  end
-
   def generate_pages
-    if (@flickr.photos.total.to_i > 0 && 
-        (num_pages = @flickr.photos.pages > 10 ? 10 : @flickr.photos.pages.to_i) > 1 &&
-        num_pages > 1
-    )
-      erb %Q{
-        <% num_pages.times do |i| %>
-          <a href='javascript:void(0)' id='<%= i + 1 %>'><%= i + 1 %></a>
-        <% end %>
-      }, binding
+    if @flickr.photos.total.to_i > 0
+      @num_pages = @flickr.photos.pages > 15 ? 15 : @flickr.photos.pages.to_i
+      erb :pages if @num_pages > 1
     end
   end
 
@@ -62,22 +36,6 @@ class Render
 private
 
   def erb(template, bind = nil)
-    ERB.new(template).result(bind || binding)
+    ERB.new(File.read("#{template}.erb")).result(bind || binding)
   end
-
-  def tag(name, options, &block)
-    output = ""
-    output << "<#{name}"
-    keyvalue = options.collect { |key, value| "#{key}=\"#{value}\"" }
-    output << " #{keyvalue.join(" ")}" if keyvalue.size > 0
-    if block 
-      output << ">"
-      output << yield 
-      output << "</#{name}>"
-    else
-      output << " />"
-    end
-    output
-  end
-
 end
