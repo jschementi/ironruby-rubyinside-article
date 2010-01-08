@@ -28,12 +28,28 @@ module Photoviewer
 
   private
 
+    def flickr_source(p)
+      "http://farm#{ p.farm.to_i }.static.flickr.com/#{ p.server }/#{ p.photo_id }_#{ p.secret }"
+    end
+    
+    def flickr_page(p)
+      "http://www.flickr.com/photos/#{ p.owner }/#{ p.photo_id }"
+    end
+
+    def flickr_num_pages
+      @flickr.photos.pages > 15 ? 15 : @flickr.photos.pages.to_i
+    end
+
+    def encode(str)
+      System::Windows::Browser::HttpUtility.html_encode str
+    end
+
     def handle_pagination(div)
-      @app.document.get_element_by_id(div.to_s.to_clr_string).children.each do |child|
-        if child.id.to_s.to_i == @current_page
+      @app.document.get_element_by_id(div).children.each do |child|
+        if child.id.to_i == @current_page
           child.css_class = "active"
         else
-          child.onclick{|s, args| @app.create_request @tags, child.id.to_s.to_i }
+          child.onclick{|s, args| @app.create_request @tags, child.id.to_i }
         end
       end
     end

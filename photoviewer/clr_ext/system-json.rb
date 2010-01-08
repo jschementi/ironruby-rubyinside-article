@@ -1,6 +1,10 @@
 require 'System.Json'
 
-module System::Json
+module System::Json  
+  def self.parse(str)
+    JsonValue.parse(str)
+  end
+  
   class JsonValue
     def method_missing(index)
       index = 'id' if index.to_s == 'photo_id'

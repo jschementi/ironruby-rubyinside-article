@@ -3,6 +3,10 @@ require 'clr_ext/system-json'
 
 module Photoviewer
   class App
+    Uri = System::Uri
+    Net = System::Net
+    Json = System::Json
+
     def initialize
       @view = View.new(self)
       @url = "http://api.flickr.com/services/rest"
@@ -14,29 +18,27 @@ module Photoviewer
         :sort => "relevance",
         :per_page => "30"
       }
-      document.submit_search.onclick{|s, e| 
-        begin
-          create_request document.keyword.value, 1 
-        rescue => e
-          window.alert e
-        end
-      }
+      document.submit_search.onclick do |s, e| 
+        create_request document.keyword.value
+      end
     end
 
-    def create_request(keyword, page)
+    def create_request(keyword, page = 1)
       @view.loading_start
 
       @options[:tags] = keyword
       @options[:page] = page
       @url = make_url @url, @options
 
-      request = System::Net::WebClient.new
-      request.download_string_completed{|_,e| show_images e.result }
-      request.download_string_async System::Uri.new(@url)
+      request = Net::WebClient.new
+      request.download_string_completed do |_,e| 
+        show_images e.result
+      end
+      request.download_string_async Uri.new(@url)
     end
 
     def show_images(response)
-      @flickr = System::Json::JsonValue.parse response
+      @flickr = Json.parse response
       @view.show_images @flickr, @options[:tags], @options[:page]
       @view.loading_finish
     end
