@@ -1,13 +1,17 @@
-<div class='images'>
-  <% @flickr.photos.photo.each do |p| %>
-    <% source = "http://farm#{p.farm.to_i}.static.flickr.com/#{p.server}/#{p.photo_id}_#{p.secret}" %>
-    <div class='image'>
-      <a href="<%= source %>.jpg"
-         title="&lt;a href=&quot;http://www.flickr.com/photos/<%= p.owner %>/<%= p.photo_id %>&quot; target=&quot;_blank&quot;&gt;<%= p.title %>&lt;/a&gt;"
-         rel="lightbox[<%= @tags %>]"
-      >
-        <img src="<%= source %>_s.jpg" />
-      </a>
-    </div>
-  <% end %>
-</div>
+<% if @flickr.stat == "ok" && @flickr.photos.total.to_i > 0 %>
+  <div class='images'>
+    <% @flickr.photos.photo.each do |p| %>
+      <% source = "http://farm#{p.farm.to_i}.static.flickr.com/#{p.server}/#{p.photo_id}_#{p.secret}" %>
+      <div class='image'>
+        <a href="<%= source %>.jpg"
+           title="&lt;a href=&quot;http://www.flickr.com/photos/<%= p.owner %>/<%= p.photo_id %>&quot; target=&quot;_blank&quot;&gt;<%= p.title %>&lt;/a&gt;"
+           rel="lightbox[<%= @tags %>]"
+        >
+          <img src="<%= source %>_s.jpg" />
+        </a>
+      </div>
+    <% end %>
+  </div>
+<% else %>
+  No images found!
+<% end %>

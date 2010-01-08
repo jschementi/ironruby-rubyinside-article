@@ -1,16 +1,3 @@
-html, body {
-  height: 100%;
-  overflow: auto;
-}
-body {
-  padding: 0;
-  margin: 0;
-}
-#errorLocation {
-  font-size: small;
-  color: Gray;
-}
-
 body {
   font-family: "Trebuchet MS" Verdana sans-serif;
   border: 0px; padding: 0px; margin: 0px;

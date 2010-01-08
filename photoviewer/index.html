@@ -1,14 +1,13 @@
 ﻿<html>
 <head>
-    <title>Ruby example - photoviewer</title>
+    <title>photoviewer</title>
 
     <script type="text/javascript" src="lightbox/js/prototype.js"></script>
     <script type="text/javascript" src="lightbox/js/scriptaculous.js?load=effects"></script>
     <script type="text/javascript" src="lightbox/js/lightbox.js"></script>
     <link rel="stylesheet" href="lightbox/css/lightbox.css" type="text/css" media="screen" />
 
-    <!-- Basic stylesheet for application -->
-    <link type="text/css" rel="stylesheet" href="stylesheets/screen.css" />
+    <link type="text/css" rel="stylesheet" href="assets/screen.css" />
 
     <script type="text/javascript">
       window.DLR = {}
@@ -22,7 +21,7 @@
       <form id="search" action="javascript:void(0)"> 
           <input type="text" id="keyword" />
           <input type="submit" id="submit_search" value="search" />
-          <img src="images/loading.gif" id="images_loading" />
+          <img src="assets/loading.gif" id="images_loading" />
       </form>
       <div id="search_results">
           <div id="search_images"></div>
@@ -30,14 +29,15 @@
       </div>
   </div>
   <div class="clear"></div>
+  <script type="text/ruby" src="../repl.rb"></script>
   
-  <script type="text/ruby" src="system-json.rb" defer='true'></script>
-  <script type="text/ruby" src="erb.rb" defer='true'></script>
-  <script type="text/ruby" src="render.rb" defer='true'></script>
   <script type="text/ruby" src="pages.erb" defer='true'></script>
   <script type="text/ruby" src="images.erb" defer='true'></script>
 
-  <script type="text/ruby" src="../repl.rb"></script>
+  <script type="text/ruby" src="clr_ext/system-json.rb" defer='true'></script>
+  <script type="text/ruby" src="ruby_lib/erb.rb" defer='true'></script>
+  <script type="text/ruby" src="view.rb" defer='true'></script>
+
   <script type="text/ruby" src="app.rb"></script>
 </body>
 </html>

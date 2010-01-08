@@ -1,15 +1,4 @@
-include Microsoft::Scripting::Silverlight
-
-def load_assembly_from_path(path)
-  DynamicApplication.current.runtime.host.
-  platform_adaptation_layer.
-  load_assembly_from_path(path)
-end
-
-load_assembly_from_path "System.Json.dll"
 require 'System.Json'
-
-include System
 
 module System::Json
   class JsonValue
