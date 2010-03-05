@@ -1,4 +1,4 @@
-require 'ruby_lib/erb'
+require 'lib/erb'
 
 module Photoviewer
   class View

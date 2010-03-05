@@ -1,5 +1,5 @@
 require 'view'
-require 'clr_ext/system-json'
+require 'lib/system-json'
 
 module Photoviewer
   class App

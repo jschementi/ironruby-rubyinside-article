@@ -2,16 +2,14 @@
 <head>
   <title>Ruby - Console</title>
   <script type="text/javascript">
-    window.DLR = {}
-    DLR.settings = {console: true}
+    window.DLR = {settings: {console: true, debug: true}}
   </script>
-  <script src="http://mschnlnine.vo.llnwd.net/d1/dlr-20091120.js"
-          type="text/javascript"></script>
+  <script src="ironruby/dlr.js" type="text/javascript"></script>
 </head>
-<body>
+<body id='demo'>
   <div id="message">Loading ...</div>
   <script type="text/ruby">
-    document.message.innerHTML = "Ruby says hello!"
+    document.message.html = "Ruby says hello!"
   </script>
 </body>
 </html>

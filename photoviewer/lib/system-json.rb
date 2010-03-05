@@ -1,4 +1,4 @@
-require 'System.Json'
+require 'lib/System.Json'
 
 module System::Json  
   def self.parse(str)
